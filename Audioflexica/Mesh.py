@@ -2,35 +2,12 @@ import numpy as np
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph.opengl as gl
 import sys
+from opensimplex import OpenSimplex
 
 class Mesh:
 	def __init__(self):
 		self.app = QtGui.QApplication(sys.argv)
 		self.view = gl.GLViewWidget()
-
-		verts = np.array([
-		[ 0,  0,  0],
-		[ 1,  0,  0],
-		[ 1,  1,  0],
-		[ 0,  1,  0],
-		[ 0,  0,  1],
-		[ 1,  0,  1],
-		[ 1,  1,  1],
-		[ 0,  1,  1],])
-
-		faces = np.array([
-		[0, 1, 2],
-		[0, 2, 3],
-		[0, 1, 4],
-		[1, 5, 4],
-		[1, 2, 5],
-		[2, 5, 6],
-		[2, 3, 6],
-		[3, 6, 7],
-		[0, 3, 7],
-		[0, 4, 7],
-		[4, 5, 7],
-		[5, 6, 7],])
 
 		colors = np.array([
 		[1,  0, 0, .5],
@@ -44,6 +21,23 @@ class Mesh:
 		[.7, .1, .9, .5],
 		[.7, .2, .6, .5],
 		[.8, .1, .5, .5],])
+
+		verts = []
+		faces = []
+
+		#32 by 32 vertices
+		for x in range(32):
+			for y in range(32):
+				verts.append([x, y, 0])
+		verts = np.array(verts)
+
+
+		#implementing faces
+		for i in range(31):
+			for j in range(31):
+				faces.append([i * 32 + j, i *32 + j + 1, i * 32 + j + 32])
+		faces = np.array(faces)
+
 
 		self.mesh = gl.GLMeshItem(vertexes= verts, faces= faces, faceColors= colors)
 
