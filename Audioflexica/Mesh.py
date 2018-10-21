@@ -9,19 +9,6 @@ class Mesh:
 		self.app = QtGui.QApplication(sys.argv)
 		self.view = gl.GLViewWidget()
 
-		colors = np.array([
-		[1,  0, 0, .5],
-		[0, 1, 0, .5],
-		[0, 0, 1, .5],
-		[1, 0 , 1, .5],
-		[1, 1, 1, .5],
-		[0, 1, 1, .5],
-		[1, 1, 0, .5],
-		[.5, .8, .1 , .5],
-		[.7, .1, .9, .5],
-		[.7, .2, .6, .5],
-		[.8, .1, .5, .5],])
-
 		verts = []
 		faces = []
 
@@ -36,8 +23,11 @@ class Mesh:
 		for i in range(31):
 			for j in range(31):
 				faces.append([i * 32 + j, i *32 + j + 1, i * 32 + j + 32])
+				faces.append([ i *32 + j + 1, i * 32 + j + 32 + 1, i * 32 + j + 32])
 		faces = np.array(faces)
 
+		colors = np.random.rand(len(faces), 4)
+		colors = np.array(colors)
 
 		self.mesh = gl.GLMeshItem(vertexes= verts, faces= faces, faceColors= colors)
 
