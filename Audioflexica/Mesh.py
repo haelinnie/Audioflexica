@@ -34,14 +34,15 @@ class Mesh:
 		self.colors = np.array(self.colors)
 
 		#create mesh
-		self.mesh = gl.GLMeshItem(vertexes= self.verts, faces= self.faces, faceColors= self.colors)
+		self.mesh = gl.GLMeshItem(vertexes= self.verts, faces= self.faces, faceColors= self.colors, drawEdges=True)
 
 		#audio 
-		self.RATE = 44100
+		#self.RATE = 44100
+		self.RATE = 33000
 		self.CHUNK = 1024
 		self.audioData = None
-		self.p = pyaudio.PyAudio()
-		self.stream = self.p.open(format=pyaudio.palnt16, channels= 1, rate=self.RATE, input=True, output=True, frames_per_buffer=self.CHUNK)
+		self.p = pyaudio.PyAudio() 
+		self.stream = self.p.open(format=pyaudio.paInt16, channels= 1, rate=self.RATE, input=True, output=True, frames_per_buffer=self.CHUNK)
 
 		#get mesh to show
 		self.view.show()
@@ -52,9 +53,11 @@ class Mesh:
 	def update(self):
 		#update to audio
 		self.audioData = self.stream.read(self.CHUNK, exception_on_overflow=False)
-		struct.unpack()
-
-
+		new_audio = struct.unpack(str (2 * self.CHUNK) + 'B', self.audioData)
+		new_audio = np.array(new_audio, dtype='b')[::2] + 128
+		new_audio = np.array(new_audio, dtype='int32') - 128
+		new_audio = new_audio * 0.04
+		new_audio = new_audio.reshape(32,32)
 
 		verts = []
 		faces = []
@@ -62,7 +65,7 @@ class Mesh:
 		#32 by 32 vertices
 		for x in range(32):
 			for y in range(32):
-				verts.append([x, y, self.noise.noise2d(x + self.offSet, y + self.offSet)])
+				verts.append([x, y, new_audio[x][y] * self.noise.noise2d(x + self.offSet, y + self.offSet)])
 		verts = np.array(verts)
 
 		#implementing faces
@@ -78,7 +81,7 @@ class Mesh:
 
 		#offset
 		self.offSet -= .1
-		self.mesh.setMeshData(vertexes= verts, faces= faces, faceColors= colors)
+		self.mesh.setMeshData(vertexes= verts, faces= faces, faceColors= colors, drawEdges=True)
 
 	def run():
 		if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
