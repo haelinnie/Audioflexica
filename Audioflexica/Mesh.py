@@ -37,8 +37,7 @@ class Mesh:
 		self.mesh = gl.GLMeshItem(vertexes= self.verts, faces= self.faces, faceColors= self.colors, drawEdges=True)
 
 		#audio 
-		#self.RATE = 44100
-		self.RATE = 33000
+		self.RATE = 44100
 		self.CHUNK = 1024
 		self.audioData = None
 		self.p = pyaudio.PyAudio() 
@@ -90,7 +89,7 @@ class Mesh:
 	def animation(self):
 		timer = QtCore.QTimer()
 		timer.timeout.connect(self.update)
-		timer.start(75)
+		timer.start(25)
 		Mesh.run()
 		self.update()
 		
